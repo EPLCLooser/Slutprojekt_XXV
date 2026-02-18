@@ -15,21 +15,37 @@ def seed!(db)
 end
 
 def drop_tables(db)
-  db.execute('DROP TABLE IF EXISTS exempel')
+  db.execute('DROP TABLE IF EXISTS users')
+  db.execute('DROP TABLE IF EXISTS events')
+  db.execute('DROP TABLE IF EXISTS event_types')
 end
 
 def create_tables(db)
-  db.execute('CREATE TABLE exempel (
+  db.execute('CREATE TABLE events (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name TEXT NOT NULL, 
-              description TEXT,
-              state BOOLEAN)')
+              code TEXT NOT NULL,
+              name TEXT NOT NULL,
+              place TEXT,
+              info TEXT,
+              date TEXT,
+              time TEXT,
+              event_type_id INTEGER)')
+  db.execute('CREATE TABLE event_types (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL)')
+  db.execute('CREATE TABLE users (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL)')
 end
 
 def populate_tables(db)
-  db.execute('INSERT INTO exempel (name, description, state) VALUES ("Köp mjölk", "3 liter mellanmjölk, eko",false)')
-  db.execute('INSERT INTO exempel (name, description, state) VALUES ("Köp julgran", "En rödgran",false)')
-  db.execute('INSERT INTO exempel (name, description, state) VALUES ("Pynta gran", "Glöm inte lamporna i granen och tomten",false)')
+  db.execute('INSERT INTO users (name) VALUES ("LucasNorrflod")')
+  db.execute('INSERT INTO users (name) VALUES ("Victor Rosenhall")')
+  db.execute('INSERT INTO users (name) VALUES ("Leo Dhal")')
+  db.execute('INSERT INTO events (code, name, place, info, date, time, event_type_id) VALUES ("X5D3ddf2", "kalas", "långtifrångatan 2", "Ha på er fina kläder", "21 januari", "15:00", 1)')
+  db.execute('INSERT INTO event_types (name) Values ("Party")')
+  db.execute('INSERT INTO event_types (name) Values ("Graduation")')
+  db.execute('INSERT INTO event_types (name) Values ("Wedding")')
 end
 
 
