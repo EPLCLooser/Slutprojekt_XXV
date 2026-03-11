@@ -5,13 +5,14 @@ require 'sinatra/reloader'
 require 'bcrypt'
 require_relative './model.rb'
 
-enable :sessions
+enable :session
 
 @all_routes = ['/', '/events', '/events/:id', '/events/new', '/events/:id/edit']
 
-before ('/events/*') do
+before ('/events*') do
+  p "här: #{session[:logged_in]}"
   if session[:logged_in] == nil 
-    redirect to ('/registrer')
+    redirect to ('/register')
   end
 end
 
@@ -35,8 +36,8 @@ get('/events/:id/edit') do
   slim(:edit)
 end
 
-get('/registrer') do 
-  slim(:registrer)
+get('/register') do 
+  slim(:register)
 end
 
 post('/events') do
@@ -54,8 +55,7 @@ end
 post('/events/login') do
   user = params["user"]
   pwd = params["pwd"]
-  pwd_confirm = params["pwd_confirm"]
-  if registrer(user, pwd, pwd_confirm)
+  if login(user, pwd)
     session[:logged_in] = true
     redirect('/events')
   else
@@ -67,20 +67,11 @@ post('/events/user') do
   user = params["user"]
   pwd = params["pwd"]
   pwd_confirm = params["pwd_confirm"]
-
-  db = SQLite3::Database.new("db/todos.db")
-  result = db.execute("SELECT id FROM users WHERE username=?", user)
-
-  if result.empty?
-    if pwd==pwd_confirm
-      pwd_digest=BCrypt::Password.create(pwd)
-      db.execute("INSERT INTO users(username, password) VALUES(?,?)", [user, pwd_digest])
-      session[:logged_in] = true
-      redirect('/')
-    else
-      redirect('/error') 
-    end
+  
+  if register(user, pwd, pwd_confirm)
+    session[:logged_in] = true
+    redirect('/events')
   else
-    redirect('/login_page')
+    redirect('/error')
   end
 end
