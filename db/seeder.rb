@@ -30,7 +30,7 @@ def create_tables(db)
               info TEXT,
               date TEXT,
               time TEXT,
-              event_type_id INTEGER)')
+              event_type_id INTEGER NOT NULL)')
   db.execute('CREATE TABLE event_types (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               name TEXT NOT NULL)')

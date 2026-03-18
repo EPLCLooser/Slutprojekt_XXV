@@ -4,7 +4,6 @@ require 'sqlite3'
 require 'sinatra/reloader'
 require 'bcrypt'
 require_relative './model.rb'
-
 enable :sessions
 
 @all_routes = ['/', '/events', '/events/:id', '/events_new', '/events/:id/edit']
@@ -46,7 +45,8 @@ post('/events/create') do
   info = params[:info]
   date = params[:date]
   time = params[:time]
-  if add_event(name, place, info, date, time)
+  event_type_id = params[:event_type]
+  if add_event(name, place, info, date, time, event_type_id)
     redirect('/events')
   else
     redirect('/error')

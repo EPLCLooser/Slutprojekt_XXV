@@ -1,10 +1,14 @@
 def register(user, pwd, pwd_confirm)
   db = SQLite3::Database.new("db/databas.db")
+  db.results_as_hash = true
   result = db.execute("SELECT id FROM users WHERE user=?", user)
   if result.empty? 
     if pwd==pwd_confirm
       pwd_digest=BCrypt::Password.create(pwd)
       db.execute("INSERT INTO users(user, password) VALUES(?,?)", [user, pwd_digest])
+      result = db.execute("SELECT id FROM users WHERE user=?", user)
+      p result
+      session[:user_id] = result.first["id"]
       return true
     else
       return false 
@@ -41,12 +45,22 @@ def login(user, pwd)
   end
 end
 
-def add_event(name, place, info, date, time)
+def add_event(name, place, info, date, time, event_type_id)
   db = SQLite3::Database.new("db/databas.db")
   db.results_as_hash = true
   result = db.execute("SELECT id FROM events WHERE name=?", name)
+  code = rand(10000..100000)
+  code_result = db.execute("SELECT id FROM events WHERE code=?", code)
+  while !code_result.empty?
+    code += 1
+    code_result = db.execute("SELECT id FROM events WHERE code=?", code)
+  end
   if result.empty?
-    db.execute("INSERT name, place, info, date, time VALUE()") #FIXA HÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄR
+    db.execute("INSERT INTO events(code, name, place, info, date, time, event_type_id) VALUES(?,?,?,?,?,?,?)", [code, name, place, info, date, time, event_type_id])
+    result = db.execute("SELECT id FROM events WHERE name=?", name)
+    event_id = result.first["id"]
+    db.execute("INSERT INTO users_events(user_id, event_id, user_owner) VALUES(?,?,?)", [session[:user_id], event_id, 1])
+    return true
   else
     return false
   end
