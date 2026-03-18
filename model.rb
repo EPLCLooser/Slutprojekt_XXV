@@ -65,3 +65,14 @@ def add_event(name, place, info, date, time, event_type_id)
     return false
   end
 end
+
+def join(code)
+  db = SQLite3::Database.new("db/databas.db")
+  db.results_as_hash = true
+  result = db.execute("SELECT id FROM events WHERE code=?", code)
+  if result.empty? #ÄNDRA så att man inte kan joina ett event flera gånger
+  else
+    event_id = result.first["id"]
+    db.execute("INSERT INTO users_events(user_id, event_id, user_owner) VALUES(?,?,?)",[session[:user_id], event_id, 0])
+  end
+end

@@ -83,3 +83,9 @@ post('/user') do
     redirect('/error')
   end
 end
+
+post('/join') do
+  code = params[:code].to_i
+  join(code)
+  redirect('/events')
+end
