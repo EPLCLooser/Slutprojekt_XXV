@@ -1,0 +1,12 @@
+h2 Create
+form action="/events/create" method="post"
+    input type="text" name="name" placeholder="Name your event"
+    input type="text" name="place" placeholder="Where is your event"
+    input type="text" name="info" placeholder="Extra information"
+    input type="text" name="date" placeholder="What date"
+    input type="text" name="time" placeholder="What time"
+    select name="event_type" id="event_type_id"
+        option value="0" Wedding
+        option value="1" Party
+        option value="2" Graduation
+    input type="submit" name="save"

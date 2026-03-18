@@ -5,14 +5,13 @@ require 'sinatra/reloader'
 require 'bcrypt'
 require_relative './model.rb'
 
-enable :session
+enable :sessions
 
-@all_routes = ['/', '/events', '/events/:id', '/events/new', '/events/:id/edit']
+@all_routes = ['/', '/events', '/events/:id', '/events_new', '/events/:id/edit']
 
-before ('/events*') do
-  p "här: #{session[:logged_in]}"
-  if session[:logged_in] == nil 
-    redirect to ('/register')
+before(@all_routes) do
+  if session[:logged_in] == nil || session[:ban]
+    redirect('/register')
   end
 end
 
@@ -21,6 +20,7 @@ get('/') do
 end
 
 get('/events') do 
+  p"inte fisk"
   slim(:index)
 end
 
@@ -28,7 +28,7 @@ get('/events/:id') do
   slim(:show)
 end
 
-get('/events/new') do 
+get('/events_new') do
   slim(:new)
 end
 
@@ -40,8 +40,17 @@ get('/register') do
   slim(:register)
 end
 
-post('/events') do
-  redirect('/events')
+post('/events/create') do
+  name = params[:name]
+  place = params[:place]
+  info = params[:info]
+  date = params[:date]
+  time = params[:time]
+  if add_event(name, place, info, date, time)
+    redirect('/events')
+  else
+    redirect('/error')
+  end
 end
 
 post('/events/:id/update') do
@@ -52,7 +61,7 @@ post('/events/:id/delete') do
   redirect('/events')
 end
 
-post('/events/login') do
+post('/login') do
   user = params["user"]
   pwd = params["pwd"]
   if login(user, pwd)
@@ -63,11 +72,10 @@ post('/events/login') do
   end 
 end
 
-post('/events/user') do
+post('/user') do
   user = params["user"]
   pwd = params["pwd"]
   pwd_confirm = params["pwd_confirm"]
-  
   if register(user, pwd, pwd_confirm)
     session[:logged_in] = true
     redirect('/events')

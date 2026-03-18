@@ -36,7 +36,7 @@ def create_tables(db)
               name TEXT NOT NULL)')
   db.execute('CREATE TABLE users (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name TEXT NOT NULL,
+              user TEXT NOT NULL,
               password TEXT NOT NULL)')
   db.execute('CREATE TABLE users_events (
               user_id INTEGER,
