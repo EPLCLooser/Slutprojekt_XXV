@@ -1,11 +1,10 @@
 
-form action="/events" 
-select name="event_type" id="event_type_id"
-    option value="0" Wedding
-    option value="1" Party
-    option value="2" Graduation
-select name="event" id="event_id" 
-    option value="0"  Lucas wedding
-
+form action="/events" method="post"
+    select name="event_type" id="event_type_id"
+        option value="0" Wedding
+        option value="1" Party
+        option value="2" Graduation
+    select name="event" id="event_id" 
+        option value="0"  Lucas wedding
 br
 a href="/events_new" Create event

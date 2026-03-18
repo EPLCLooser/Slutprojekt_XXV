@@ -46,6 +46,7 @@ def add_event(name, place, info, date, time)
   db.results_as_hash = true
   result = db.execute("SELECT id FROM events WHERE name=?", name)
   if result.empty?
+    db.execute("INSERT name, place, info, date, time VALUE()") #FIXA HÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄR
   else
     return false
   end
