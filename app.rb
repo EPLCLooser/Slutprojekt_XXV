@@ -19,7 +19,8 @@ get('/') do
 end
 
 get('/events') do 
-  p"inte fisk"
+  @owned_events, @joined_events = show_events()
+  p @joined_events
   slim(:index)
 end
 

@@ -9,8 +9,23 @@ form action="/events" method="post"
         option value="" event name
         option value="0"  Lucas wedding
 br
+h3 Owned Events
+-if @owned_events_events != []
+    -@owned_events.each do |event|
+        p=event["name"]
+-else
+    p No events found
+h3 Joined Events
+-if @joined_events != []
+    -@joined_events.each do |event|
+        p=event["name"]
+-else
+    p No events found
+br
+
 a href="/events_new" Create event
 br
+
 h3 join event
 form action="/join" method="post"
     input type="text" name="code" placeholder="code"

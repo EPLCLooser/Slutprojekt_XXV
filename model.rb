@@ -69,10 +69,18 @@ end
 def join(code)
   db = SQLite3::Database.new("db/databas.db")
   db.results_as_hash = true
-  result = db.execute("SELECT id FROM events WHERE code=?", code)
-  if result.empty? #ÄNDRA så att man inte kan joina ett event flera gånger
-  else
-    event_id = result.first["id"]
+  result = db.execute("SELECT events.id, users_events.user_id FROM (users_events INNER JOIN events ON users_events.event_id = events.id) WHERE code=?", code)
+  if result.first["users_events.user_id"] == nil #FIXA HÄR
     db.execute("INSERT INTO users_events(user_id, event_id, user_owner) VALUES(?,?,?)",[session[:user_id], event_id, 0])
   end
+end
+
+def show_events()
+  db = SQLite3::Database.new("db/databas.db")
+  db.results_as_hash = true
+  owned_events = db.execute("SELECT name, id FROM (users_events INNER JOIN events ON users_events.event_id = events.id) WHERE users_events.user_id=? AND users_events.user_owner=?", [session[:user_id], 1])
+  joined_events = db.execute("SELECT name, id FROM (users_events INNER JOIN events ON users_events.event_id = events.id) WHERE users_events.user_id=? AND users_events.user_owner=?", [session[:user_id], 0])
+  p owned_events
+  p joined_events
+  return [owned_events, joined_events]
 end
