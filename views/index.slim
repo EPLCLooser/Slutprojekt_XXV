@@ -15,7 +15,9 @@ h3 Owned Events
         p=event["name"]
 -else
     p No events found
+
 h3 Joined Events
+
 -if @joined_events != []
     -@joined_events.each do |event|
         p=event["name"]
@@ -30,3 +32,6 @@ h3 join event
 form action="/join" method="post"
     input type="text" name="code" placeholder="code"
     input type="submit" value="join"
+br
+form action="/log_out" method="post"
+    input type="submit" value="Log Out"

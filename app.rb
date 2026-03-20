@@ -9,7 +9,7 @@ enable :sessions
 @all_routes = ['/', '/events', '/events/:id', '/events_new', '/events/:id/edit']
 
 before(@all_routes) do
-  if session[:logged_in] == nil || session[:ban]
+  if session[:logged_in] != true || session[:ban]
     redirect('/register')
   end
 end
@@ -20,7 +20,7 @@ end
 
 get('/events') do 
   @owned_events, @joined_events = show_events()
-  p @joined_events
+  p @owned_events
   slim(:index)
 end
 
@@ -87,6 +87,13 @@ end
 
 post('/join') do
   code = params[:code].to_i
-  join(code)
+  if code != 0
+    join(code)
+  end
   redirect('/events')
+end
+
+post("/log_out") do
+  session[:logged_in] = false
+  redirect("/events")
 end
