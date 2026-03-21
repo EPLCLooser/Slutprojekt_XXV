@@ -19,12 +19,18 @@ get('/') do
 end
 
 get('/events') do 
-  @owned_events, @joined_events = show_events()
+  type_search = params[:event_type]
+  if type_search == ""
+    type_search = nil
+  end
+  @owned_events, @joined_events = show_events(type_search)
   p @owned_events
   slim(:index)
 end
 
 get('/events/:id') do 
+  @event = get_event(params[:id].to_i)
+  p @event
   slim(:show)
 end
 

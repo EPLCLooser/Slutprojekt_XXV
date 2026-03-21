@@ -82,10 +82,23 @@ def join(code)
   end
 end
 
-def show_events()
+def show_events(type_search)
   db = SQLite3::Database.new("db/databas.db")
   db.results_as_hash = true
-  owned_events = db.execute("SELECT name, id FROM (users_events INNER JOIN events ON users_events.event_id = events.id) WHERE users_events.user_id=? AND users_events.user_owner=?", [session[:user_id], 1])
-  joined_events = db.execute("SELECT name, id FROM (users_events INNER JOIN events ON users_events.event_id = events.id) WHERE users_events.user_id=? AND users_events.user_owner=?", [session[:user_id], 0])
+  owned_events = db.execute("SELECT events.name, events.id FROM ((users_events INNER JOIN events ON users_events.event_id = events.id) INNER JOIN event_types ON events.event_type_id = event_types.id) WHERE users_events.user_id=? AND users_events.user_owner=? AND (event_types.id=? OR ? IS NULL)", [session[:user_id], 1, type_search, type_search])
+  joined_events = db.execute("SELECT events.name, events.id FROM ((users_events INNER JOIN events ON users_events.event_id = events.id) INNER JOIN event_types ON events.event_type_id = event_types.id) WHERE users_events.user_id=? AND users_events.user_owner=? AND (event_types.id=? OR ? IS NULL)", [session[:user_id], 0, type_search, type_search])
   return [owned_events, joined_events]
+end
+
+#Returns a dictionary of the event's information given its id
+def get_event(event_id)
+  db = SQLite3::Database.new("db/databas.db")
+  db.results_as_hash = true
+  db.execute("SELECT * FROM users_events WHERE user_id=? AND event_id=?", [session[:user_id], event_id])
+  if 
+    event = db.execute("SELECT event_types.name AS event_type_name, * FROM (event_types INNER JOIN events ON events.event_type_id = event_types.id) WHERE events.id=?", event_id).first
+  else
+    redirect("/error") #User is not in event
+  end
+  return event
 end

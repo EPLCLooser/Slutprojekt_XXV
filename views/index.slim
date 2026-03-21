@@ -1,26 +1,37 @@
 
-form action="/events" method="post"
-    select name="event_type" id="event_type_id"
-        option value="" event type
-        option value="0" Wedding
-        option value="1" Party
-        option value="2" Graduation
-    select name="event" id="event_id" 
-        option value="" event name
-        option value="0"  Lucas wedding
+form action="/events" method="get"
+    b Event type: 
+    select name="event_type" id="event_type_id" onchange="this.form.submit()"
+        option value="" Select
+        option value="" All 
+        option value="1" Wedding
+        option value="2" Party
+        option value="3" Graduation
 br
 h3 Owned Events
+hr
 -if @owned_events_events != []
     -@owned_events.each do |event|
         p=event["name"]
+        form action="/events/#{event['id']}" method="get"
+            input type="submit" value="View"
+        form action="/events/#{event['id']}/edit" method="get"
+            input type="submit" value="Edit"
+        form action="/events/#{event['id']}/delete" method="post"
+            input type="submit" value="Delete"
+        hr
+
 -else
     p No events found
 
 h3 Joined Events
-
+hr
 -if @joined_events != []
     -@joined_events.each do |event|
-        p=event["name"]
+        strong=event["name"]
+        form action="/events/#{event['id']}" method="get"
+            input type="submit" value="View"
+        hr
 -else
     p No events found
 br
