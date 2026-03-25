@@ -21,7 +21,6 @@ hr
         form action="/events/#{event['id']}/delete" method="post"
             input type="submit" value="Delete"
         hr
-
 -else
     p No events found
 
@@ -36,6 +35,13 @@ hr
 -else
     p No events found
 br
+hr
+-if @admin
+    -@users.each do |user|
+        p=user["user"]
+        form action="user/#{user['id']}/delete" method="post" 
+            input type="submit" value="Delete"
+        hr
 
 a href="/events_new" Create event
 br

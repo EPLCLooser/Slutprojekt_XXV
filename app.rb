@@ -23,8 +23,11 @@ get('/events') do
   if type_search == ""
     type_search = nil
   end
+  if is_admin?()
+    @admin = true
+    @users = get_users()
+  end
   @owned_events, @joined_events = show_events(type_search)
-  p @owned_events
   slim(:index)
 end
 
@@ -34,21 +37,20 @@ get('/error') do
 end
 
 get('/events/:id') do 
-  @event, @owner = get_event(params[:id].to_i)
-  p @event
-  slim(:show)
+  @event, @owner = get_event(params[:id])
+  slim(:"./events/show")
 end
 
 get('/events_new') do
-  slim(:new)
+  slim(:"./events/new")
 end
 
 get('/events/:id/edit') do 
-  slim(:edit)
+  slim(:"./events/edit")
 end
 
 get('/register') do 
-  slim(:register)
+  slim(:"./user/new")
 end
 
 post('/events/create') do
@@ -125,4 +127,13 @@ end
 post("/log_out") do
   session[:logged_in] = false
   redirect("/events")
+end
+
+post("/user/:id/delete") do
+  id = params[:id]
+  if delete_user(id)
+    redirect("/events")
+  else
+    redirect("/error")
+  end
 end
