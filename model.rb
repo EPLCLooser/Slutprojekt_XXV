@@ -178,9 +178,12 @@ def delete_user(id)
   if is_admin?()
     db = SQLite3::Database.new("db/databas.db")
     db.results_as_hash = true
-    db.execute("DELETE FROM events WHERE id IN (SELECT event_id FROM users_events WHERE user_id = ? AND user_owner = ?)", [id, 1])
+    event_ids = db.execute("SELECT event_id FROM users_events WHERE user_id=?", id)
+    db.execute("DELETE FROM events WHERE id IN (SELECT event_id FROM users_events WHERE user_id = ?)", id)
     db.execute("DELETE FROM users WHERE id=?", id)
-    db.execute("DELETE FROM users_events WHERE user_id=?", id)
+    event_ids.each do |event_id|
+      db.execute("DELETE FROM users_events WHERE event_id=?", event_id["event_id"])
+    end
     return true
   else
     session[:error] = "You do not have permission to delete another user"
