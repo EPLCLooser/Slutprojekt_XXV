@@ -1,0 +1,13 @@
+h2 Edit
+form action="/events/#{params[:id]}/update" method="post"
+    input type="text" name="name" placeholder="Name your event"
+    input type="text" name="place" placeholder="Where is your event"
+    input type="text" name="info" placeholder="Extra information"
+    input type="date" name="date" placeholder="What date"
+    input type="time" name="time" placeholder="What time"
+    select name="event_type" id="event_type_id"
+        option value="" event type
+        option value="1" Wedding
+        option value="2" Party
+        option value="3" Graduation
+    input type="submit" value="Save"

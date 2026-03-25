@@ -5,3 +5,10 @@ p=@event["place"]
 p=@event["date"]
 p=@event["time"]
 p=@event["code"]
+
+-if @owner == 1
+    form action="/events/#{@event['id']}/edit" method="get"
+        input type="submit" value="Edit"
+    form action="/events/#{@event['id']}/delete" method="post"
+        input type="submit" value="Delete"
+    hr

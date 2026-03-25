@@ -13,6 +13,7 @@ hr
 -if @owned_events_events != []
     -@owned_events.each do |event|
         p=event["name"]
+        p=event["code"]
         form action="/events/#{event['id']}" method="get"
             input type="submit" value="View"
         form action="/events/#{event['id']}/edit" method="get"

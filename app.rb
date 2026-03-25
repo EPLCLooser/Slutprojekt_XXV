@@ -28,8 +28,13 @@ get('/events') do
   slim(:index)
 end
 
+get('/error') do
+  @error = session[:error]
+  slim(:error)
+end
+
 get('/events/:id') do 
-  @event = get_event(params[:id].to_i)
+  @event, @owner = get_event(params[:id].to_i)
   p @event
   slim(:show)
 end
@@ -61,11 +66,28 @@ post('/events/create') do
 end
 
 post('/events/:id/update') do
+  id = params[:id]
+  name = params[:name]
+  place = params[:place]
+  info = params[:info]
+  date = params[:date]
+  time = params[:time]
+  event_type_id = params[:event_type]
+  if edit_event(name, place, info, date, time, event_type_id, id)
+    redirect('/events')
+  else
+    redirect('/error')
+  end
   redirect('/events')
 end
 
 post('/events/:id/delete') do
-  redirect('/events')
+  event_id = params[:id]
+  if delete_event(event_id)
+    redirect('/events')
+  else
+    redirect("/error")
+  end
 end
 
 post('/login') do
@@ -92,11 +114,12 @@ post('/user') do
 end
 
 post('/join') do
-  code = params[:code].to_i
-  if code != 0
-    join(code)
+  code = params[:code]
+  if join(code)
+    redirect('/events')
+  else
+    redirect('/error')
   end
-  redirect('/events')
 end
 
 post("/log_out") do

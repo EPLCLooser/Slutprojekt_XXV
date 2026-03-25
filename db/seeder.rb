@@ -1,4 +1,5 @@
 require 'sqlite3'
+require 'bcrypt'
 
 db = SQLite3::Database.new("databas.db")
 
@@ -37,7 +38,8 @@ def create_tables(db)
   db.execute('CREATE TABLE users (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               user TEXT NOT NULL,
-              password TEXT NOT NULL)')
+              password TEXT NOT NULL,
+              admin BOOLEAN)')
   db.execute('CREATE TABLE users_events (
               user_id INTEGER,
               event_id INTEGER,
@@ -55,8 +57,18 @@ def populate_tables(db)
   db.execute('INSERT INTO event_types (name) Values ("Party")')
   db.execute('INSERT INTO event_types (name) Values ("Graduation")')
   db.execute('INSERT INTO event_types (name) Values ("Wedding")')
+  pwd = admin_pwd()
+  db.execute('INSERT INTO users (user, password, admin) Values ("admin", ?, 1)', pwd)
 end
 
+def admin_pwd()
+  pwd_admin = nil
+  while pwd_admin == nil
+    puts "Write password for admin:"
+    pwd_admin=BCrypt::Password.create(gets.chomp)
+  end
+  return pwd_admin
+end
 
 seed!(db)
 
